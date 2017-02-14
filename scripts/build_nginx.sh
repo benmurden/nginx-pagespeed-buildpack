@@ -17,7 +17,7 @@ NPS_VERSION=${NPS_VERSION-1.12.34.2}
 nginx_tarball_url=http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 pcre_tarball_url=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PCRE_VERSION}.tar.gz
 zlib_url=http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz
-nps_url=https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VERSION}-beta.zip
+nps_url=https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VERSION}-beta.tar.gz
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
@@ -39,7 +39,7 @@ echo "Downloading $zlib_url"
 
 echo "Downloading $nps_url"
 ( 
-  cd nginx-${NGINX_VERSION} && curl -L $nps_url | unzip 
+  cd nginx-${NGINX_VERSION} && curl -L $nps_url | tar xvz
   cd ngx_pagespeed-release-${NPS_VERSION}-beta/
   wget https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz
   tar -xzvf ${NPS_VERSION}.tar.gz
