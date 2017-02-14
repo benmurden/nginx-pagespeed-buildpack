@@ -12,10 +12,12 @@
 NGINX_VERSION=${NGINX_VERSION-1.11.3}
 PCRE_VERSION=${PCRE_VERSION-8.39}
 ZLIB_VERSION=${ZLIB_VERSION-1.2.8}
+NPS_VERSION=${NPS_VERSION-1.12.34.2}
 
 nginx_tarball_url=http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 pcre_tarball_url=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PCRE_VERSION}.tar.gz
 zlib_url=http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz
+nps_url=https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VERSION}-beta.zip
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
@@ -35,11 +37,20 @@ echo "Downloading $pcre_tarball_url"
 echo "Downloading $zlib_url"
 (cd nginx-${NGINX_VERSION} && curl -L $zlib_url | tar xvz )
 
+echo "Downloading $nps_url"
+( 
+  cd nginx-${NGINX_VERSION} && curl -L $nps_url | unzip 
+  cd ngx_pagespeed-release-${NPS_VERSION}-beta/
+  wget https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz
+  tar -xzvf ${NPS_VERSION}.tar.gz
+)
+
 (
   cd nginx-${NGINX_VERSION}
   ./configure \
     --with-pcre=pcre-${PCRE_VERSION} \
     --with-zlib=zlib-${ZLIB_VERSION} \
+    --add-module=nginx-${NGINX_VERSION}/ngx_pagespeed-${NPS_VERSION}-beta
     --prefix=/tmp/nginx \
     --with-http_gzip_static_module \
     --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
