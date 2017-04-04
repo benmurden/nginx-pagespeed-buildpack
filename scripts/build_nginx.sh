@@ -28,7 +28,7 @@ echo "Downloading $nginx_tarball_url"
 curl -L $nginx_tarball_url | tar xz
 
 echo "Downloading $nps_url"
-( 
+(
   cd nginx-${NGINX_VERSION} && curl -L $nps_url | tar xz
   cd ngx_pagespeed-${NPS_VERSION}-beta/
   psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz
@@ -44,7 +44,7 @@ echo "Downloading $nps_url"
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_pagespeed-${NPS_VERSION}-beta
     --prefix=/tmp/nginx \
     --with-http_gzip_static_module \
-    --with-http_v2_module \
+    --with-ngx_http_v2_module \
     --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
     --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' 
 
