@@ -41,8 +41,8 @@ echo "Downloading $nps_url"
 (
   cd nginx-${NGINX_VERSION}
   ./configure \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_pagespeed-${NPS_VERSION}-beta \
     --prefix=/tmp/nginx \
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_pagespeed-${NPS_VERSION}-beta \
     --with-http_gzip_static_module \
     --with-ngx_http_v2_module \
     --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
