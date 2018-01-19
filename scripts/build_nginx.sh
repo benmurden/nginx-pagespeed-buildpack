@@ -34,7 +34,7 @@ echo "Downloading $nps_url"
   cd nginx-${NGINX_VERSION} && curl -L $nps_url | tar xz
   nps_dir=$(find . -name "*pagespeed-ngx-${NPS_VERSION}" -type d)
   cd $nps_dir
-  psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz
+  psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}-x64.tar.gz
   [ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
   echo "Downloading $psol_url"
   wget ${psol_url}
