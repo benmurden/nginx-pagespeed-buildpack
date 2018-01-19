@@ -52,6 +52,6 @@ echo "Downloading $nps_url"
 
 while true
 do
-  sleep 1
+  sleep 60
   echo "."
 done
