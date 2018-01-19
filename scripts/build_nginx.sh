@@ -29,8 +29,8 @@ curl -L $nginx_tarball_url | tar xz
 
 echo "Downloading $nps_url"
 (
-  cd nginx-${NGINX_VERSION} && curl -L $nps_url | tar xz
-  cd ngx_pagespeed-${NPS_VERSION}-beta/
+  cd nginx-${NGINX_VERSION} && mkdir nps-${NPS_VERSION}-beta && curl -L $nps_url | tar xz -C nps-${NPS_VERSION}-beta
+  cd nps-${NPS_VERSION}-beta/
   psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz
   [ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
   echo "Downloading $psol_url"
@@ -42,7 +42,7 @@ echo "Downloading $nps_url"
   cd nginx-${NGINX_VERSION}
   ./configure \
     --prefix=/tmp/nginx \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_pagespeed-${NPS_VERSION}-beta \
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nps-${NPS_VERSION}-beta \
     --with-http_gzip_static_module \
     --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
     --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' 
