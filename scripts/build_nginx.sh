@@ -32,6 +32,7 @@ curl -L $nginx_tarball_url | tar xz
 echo "Downloading $nps_url"
 cd nginx-${NGINX_VERSION} && curl -L $nps_url | tar xz
 nps_dir=$(find . -name "*pagespeed-ngx-${NPS_VERSION}" -type d)
+echo "NPS Dir is $nps_dir"
 cd $nps_dir
 psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}-x64.tar.gz
 [ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
@@ -42,7 +43,7 @@ tar -xzf $(basename ${psol_url})
 cd ${temp_dir}/nginx-${NGINX_VERSION}
 ./configure \
   --prefix=/tmp/nginx \
-  --add-module=${temp_dir}/nginx-${NGINX_VERSION}/${nps_dir}/ \
+  --add-module=${temp_dir}/nginx-${NGINX_VERSION}/${nps_dir} \
   --with-http_gzip_static_module \
   --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
   --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' 
