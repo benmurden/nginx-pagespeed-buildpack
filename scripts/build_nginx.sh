@@ -18,7 +18,6 @@ nginx_tarball_url=http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 nps_url=https://github.com/apache/incubator-pagespeed-ngx/archive/v${NPS_VERSION}-beta.tar.gz
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
-nps_dir=""
 
 echo "Serving files from /tmp on $PORT"
 cd /tmp
@@ -44,6 +43,7 @@ echo "Downloading $nps_url"
 
 (
   cd nginx-${NGINX_VERSION}
+  nps_dir=$(find . -name "*pagespeed-ngx-${NPS_VERSION}" -type d)
   ./configure \
     --prefix=/tmp/nginx \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/${nps_dir} \
