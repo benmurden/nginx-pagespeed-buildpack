@@ -9,8 +9,8 @@
 # Once the dyno is 'up' you can open your browser and navigate
 # this dyno's directory structure to download the nginx binary.
 
-NGINX_VERSION=${NGINX_VERSION-1.13.1}
-NPS_VERSION=${NPS_VERSION-1.12.34.2}
+NGINX_VERSION=${NGINX_VERSION-1.13.8}
+NPS_VERSION=${NPS_VERSION-1.13.35.2}
 
 nginx_tarball_url=http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 nps_url=https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VERSION}-beta.tar.gz
