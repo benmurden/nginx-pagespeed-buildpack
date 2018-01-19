@@ -9,8 +9,6 @@
 # Once the dyno is 'up' you can open your browser and navigate
 # this dyno's directory structure to download the nginx binary.
 
-set -e
-
 NGINX_VERSION=${NGINX_VERSION-1.13.8}
 NPS_VERSION=${NPS_VERSION-1.13.35.2}
 
