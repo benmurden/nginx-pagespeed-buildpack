@@ -39,7 +39,7 @@ echo "Downloading $psol_url"
 wget ${psol_url}
 tar -xzf $(basename ${psol_url})
 
-cd nginx-${NGINX_VERSION}
+cd ${temp_dir}/nginx-${NGINX_VERSION}
 ./configure \
   --prefix=/tmp/nginx \
   --add-module=${temp_dir}/nginx-${NGINX_VERSION}/${nps_dir} \
