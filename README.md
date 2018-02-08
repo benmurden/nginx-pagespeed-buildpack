@@ -9,7 +9,8 @@ Some application servers (e.g. Ruby's Unicorn) halt progress when dealing with n
 ## Versions
 
 * Buildpack Version: 0.7
-* NGINX Version: 1.11.3
+* NGINX Version: 1.13.8
+* PageSpeed Version: 1.13.35.2
 
 ## Requirements
 
