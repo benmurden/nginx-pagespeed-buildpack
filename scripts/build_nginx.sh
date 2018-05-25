@@ -41,6 +41,7 @@ echo "Downloading $nps_url"
 (
   cd nginx-${NGINX_VERSION}
   ./configure \
+    --sysroot=/app/.apt \
     --prefix=/tmp/nginx \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/incubator-pagespeed-ngx-${NPS_VERSION}-beta \
     --with-http_gzip_static_module \
