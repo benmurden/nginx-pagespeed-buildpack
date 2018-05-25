@@ -1,6 +1,6 @@
-# Heroku Buildpack: NGINX
+# Heroku Buildpack: NGINX with PageSpeed
 
-Nginx-buildpack vendors NGINX inside a dyno and connects NGINX to an app server via UNIX domain sockets.
+Nginx-pagespeed-buildpack vendors NGINX compiled with PageSpeed inside a dyno and connects NGINX to an app server via UNIX domain sockets.
 
 ## Motivation
 
