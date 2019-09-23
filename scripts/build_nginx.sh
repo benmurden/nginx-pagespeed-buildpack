@@ -6,7 +6,7 @@
 # The build-essentials package is not available in the "run" phase, so we
 # have to build it during the "compile" phase.
 #
-# Uncomment the bin/compile directives to run this script.
+# Uncomment the line that reads `sh scripts/build_nginx.sh $1` in bin/compile to run this script.
 #
 # Once this runs and compiles, the binary is available at ~/nginx/bin/nginx
 # The compile phase ends with a new "slug", which will have the binary available.
