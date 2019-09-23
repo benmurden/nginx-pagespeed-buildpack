@@ -1,57 +1,60 @@
 #!/bin/bash
 # Build NGINX and modules on Heroku.
-# This program is designed to run in a web dyno provided by Heroku.
-# We would like to build an NGINX binary for the builpack on the
-# exact machine in which the binary will run.
-# Our motivation for running in a web dyno is that we need a way to
-# download the binary once it is built so we can vendor it in the buildpack.
 #
-# Once the dyno is 'up' you can open your browser and navigate
-# this dyno's directory structure to download the nginx binary.
+# This program is meant to run during the "compile" phase for buildpacks.
+#
+# The build-essentials package is not available in the "run" phase, so we
+# have to build it during the "compile" phase.
+#
+# Uncomment the bin/compile directives to run this script.
+#
+# Once this runs and compiles, the binary is available at ~/nginx/bin/nginx
+# The compile phase ends with a new "slug", which will have the binary available.
+# Run a Heroku console to get a shell to a slug, and then download or transfer
+# the binary out. Next, copy this binary back into the repo, and uncomment
+# the changes to bin/compile.
+#
+# Inputs: $1 should be the Heroku build directory.
 
 NGINX_VERSION=${NGINX_VERSION-1.14.0}
 NPS_VERSION=${NPS_VERSION-1.13.35.2}
 
-nginx_tarball_url=http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
-nps_url=https://github.com/apache/incubator-pagespeed-ngx/archive/v${NPS_VERSION}-beta.tar.gz
+NGINX_TARBALL_URL=http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
+NPS_URL=https://github.com/apache/incubator-pagespeed-ngx/archive/v${NPS_VERSION}-beta.tar.gz
 
-temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
+DEST_DIR=$1
+TMP_DIR=${DEST_DIR}/compile-nginx
+mkdir $TMP_DIR
 
-echo "Serving files from /tmp on $PORT"
-cd /tmp
-python -m SimpleHTTPServer $PORT &
+cd $TMP_DIR
+echo "Temp dir: $TMP_DIR"
 
-cd $temp_dir
-echo "Temp dir: $temp_dir"
+echo "Downloading $NGINX_TARBALL_URL"
+curl -L $NGINX_TARBALL_URL | tar xz
 
-echo "Downloading $nginx_tarball_url"
-curl -L $nginx_tarball_url | tar xz
-
-echo "Downloading $nps_url"
+echo "Downloading $NPS_URL"
 (
-  cd nginx-${NGINX_VERSION} && curl -L $nps_url | tar xz
+  cd nginx-${NGINX_VERSION} && curl -L $NPS_URL | tar xz
   cd incubator-pagespeed-ngx-${NPS_VERSION}-beta/
-  psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}-x64.tar.gz
-  [ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
-  echo "Downloading $psol_url"
-  wget ${psol_url}
-  tar -xzf $(basename ${psol_url})
+  PSOL_URL=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}-x64.tar.gz
+  [ -e scripts/format_binary_url.sh ] && PSOL_URL=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
+  echo "Downloading $PSOL_URL"
+  wget ${PSOL_URL}
+  tar -xzf $(basename ${PSOL_URL})
 )
 
+echo "Compiling nginx"
 (
+  mkdir ${DEST_DIR}/nginx
   cd nginx-${NGINX_VERSION}
   ./configure \
-    --prefix=/tmp/nginx \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/incubator-pagespeed-ngx-${NPS_VERSION}-beta \
+    --prefix=${DEST_DIR}/nginx \
+    --add-module=${TMP_DIR}/nginx-${NGINX_VERSION}/incubator-pagespeed-ngx-${NPS_VERSION}-beta \
     --with-http_gzip_static_module \
+    --with-http_ssl_module \
     --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
     --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' 
 
   make install
+  touch ${DEST_DIR}/compiled-nginx.txt
 )
-
-while true
-do
-  sleep 60
-  echo "."
-done

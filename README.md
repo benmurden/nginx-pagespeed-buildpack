@@ -1,6 +1,6 @@
-# Heroku Buildpack: NGINX with PageSpeed
+# Heroku Buildpack: NGINX with PageSpeed and SSL support
 
-Nginx-pagespeed-buildpack vendors NGINX compiled with PageSpeed inside a dyno and connects NGINX to an app server via UNIX domain sockets.
+buildpack-nginx-pagespeed-ssl vendors NGINX compiled with PageSpeed inside a dyno and connects NGINX to an app server via UNIX domain sockets, all with SSL support.
 
 ## Motivation
 
@@ -11,6 +11,9 @@ Some application servers (e.g. Ruby's Unicorn) halt progress when dealing with n
 * Buildpack Version: 0.7
 * NGINX Version: 1.14.0
 * PageSpeed Version: 1.13.35.2
+* built by gcc 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.11)
+* built with OpenSSL 1.0.2g  1 Mar 2016
+* TLS SNI support enabled
 
 ## Requirements
 
@@ -85,7 +88,7 @@ Here are 2 setup examples. One example for a new app, another for an existing ap
 Update Buildpacks
 ```bash
 $ heroku config:set BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
-$ echo 'https://github.com/ryandotsmith/nginx-buildpack.git' >> .buildpacks
+$ echo 'https://github.com/HiMamaInc/buildpack-nginx-pagespeed-ssl.git' >> .buildpacks
 $ echo 'https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz' >> .buildpacks
 $ git add .buildpacks
 $ git commit -m 'Add multi-buildpack'
@@ -157,7 +160,7 @@ Create & Push Heroku App:
 ```bash
 $ heroku create --buildpack https://github.com/ddollar/heroku-buildpack-multi.git
 $ echo 'https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz' >> .buildpacks
-$ echo 'https://github.com/ryandotsmith/nginx-buildpack.git' >> .buildpacks
+$ echo 'https://github.com/HiMamaInc/buildpack-nginx-pagespeed-ssl.git' >> .buildpacks
 $ git add .
 $ git commit -am "init"
 $ git push heroku master
@@ -168,8 +171,15 @@ Visit App
 $ heroku open
 ```
 
+## Aptfile
+
+The Aptfile includes required Ubuntu packages required to compile SSL and PageSpeed libraries.
+
 ## License
-Copyright (c) 2013 Ryan R. Smith
+Copyright (c) 2019 HiMama Inc
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

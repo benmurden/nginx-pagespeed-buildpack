@@ -2,22 +2,27 @@
 
 set -e
 
+# COMPILE: un-comment below to build the binaries
+# echo "-----> nginx-buildpack-ssl: Building nginx"
+# sh scripts/build_nginx.sh $1
+echo "-----> nginx-buildpack-ssl: Copying nginx"
 mkdir -p "$1/bin/"
 cp -f "bin/nginx-$STACK" "$1/bin/nginx"
-nginx_version=$(./bin/nginx-$STACK -V 2>&1 | head -1 | awk '{ print $NF }')
-echo "-----> nginx-buildpack: Installed ${nginx_version} to app/bin"
+NGINX_VERSION=$(./bin/nginx-$STACK -V 2>&1 | head -1 | awk '{ print $NF }')
+echo "-----> nginx-buildpack-ssl: Installed ${NGINX_VERSION} to app/bin"
+echo "       $(./bin/nginx-$STACK -V)"
 cp bin/start-nginx "$1/bin/"
-echo '-----> nginx-buildpack: Added start-nginx to app/bin'
+echo '-----> nginx-buildpack-ssl: Added start-nginx to app/bin'
 
 mkdir -p "$1/config"
 
 cp config/mime.types "$1/config/"
-echo '-----> nginx-buildpack: Default mime.types copied to app/config/'
+echo '-----> nginx-buildpack-ssl: Default mime.types copied to app/config/'
 
 if [[ ! -f $1/config/nginx.conf.erb ]]; then
 	cp config/nginx.conf.erb "$1/config/"
-	echo '-----> nginx-buildpack: Default config copied to app/config.'
+	echo '-----> nginx-buildpack-ssl: Default config copied to app/config.'
 else
-	echo '-----> nginx-buildpack: Custom config found in app/config.'
+	echo '-----> nginx-buildpack-ssl: Custom config found in app/config.'
 fi
 exit 0
