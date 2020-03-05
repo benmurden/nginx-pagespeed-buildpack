@@ -10,48 +10,12 @@
 # this dyno's directory structure to download the nginx binary.
 
 NGINX_VERSION=${NGINX_VERSION-1.14.0}
-NPS_VERSION=${NPS_VERSION-1.13.35.2}
 
-nginx_tarball_url=http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
-nps_url=https://github.com/apache/incubator-pagespeed-ngx/archive/v${NPS_VERSION}-beta.tar.gz
+apt-get update && apt-get install -y sudo uuid-dev
 
-temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
+bash <(curl -f -L -sS https://ngxpagespeed.com/install) \
+     --assume-yes \
+     --nginx-version ${NGINX_VERSION-latest} \
+     --ngx-pagespeed-version latest-stable
 
-echo "Serving files from /tmp on $PORT"
-cd /tmp
-python -m SimpleHTTPServer $PORT &
-
-cd $temp_dir
-echo "Temp dir: $temp_dir"
-
-echo "Downloading $nginx_tarball_url"
-curl -L $nginx_tarball_url | tar xz
-
-echo "Downloading $nps_url"
-(
-  cd nginx-${NGINX_VERSION} && curl -L $nps_url | tar xz
-  cd incubator-pagespeed-ngx-${NPS_VERSION}-beta/
-  psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}-x64.tar.gz
-  [ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
-  echo "Downloading $psol_url"
-  wget ${psol_url}
-  tar -xzf $(basename ${psol_url})
-)
-
-(
-  cd nginx-${NGINX_VERSION}
-  ./configure \
-    --prefix=/tmp/nginx \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/incubator-pagespeed-ngx-${NPS_VERSION}-beta \
-    --with-http_gzip_static_module \
-    --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
-    --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' 
-
-  make install
-)
-
-while true
-do
-  sleep 60
-  echo "."
-done
+cp /usr/local/nginx/sbin/nginx /app/bin/nginx-${STACK}
