@@ -9,8 +9,6 @@
 # Once the dyno is 'up' you can open your browser and navigate
 # this dyno's directory structure to download the nginx binary.
 
-NGINX_VERSION=${NGINX_VERSION-1.14.0}
-
 apt-get update && apt-get install -y sudo uuid-dev
 
 bash <(curl -f -L -sS https://ngxpagespeed.com/install) \
